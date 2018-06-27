@@ -3,6 +3,8 @@
     package="hanco.itsp.android.hanco1">
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -21,11 +23,12 @@
         <activity android:name=".LogoActivity" />
         <activity android:name=".CameraActivity" />
 
-
         <service
             android:name=".CameraManagerService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+
+        <activity android:name=".stream"></activity>
     </application>
 
 </manifest>
