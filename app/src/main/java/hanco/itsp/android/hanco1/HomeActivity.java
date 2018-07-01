@@ -16,9 +16,11 @@ import android.os.Bundle;
 import android.util.Size;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.net.Socket;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
@@ -37,6 +39,14 @@ public class HomeActivity extends AppCompatActivity {
     private static final int SPEECH_REQUEST_CODE = 0;
     public static String spokenText;
     public TextView speechText;
+    public static String IPAddress;
+    public static Socket socket;
+
+    public static String Port;
+    EditText portfield;
+    EditText ipfield;
+    Button connect;
+    Button disconnect;
 
 
 
@@ -52,52 +62,23 @@ public class HomeActivity extends AppCompatActivity {
         Button rpiButton=findViewById(R.id.rpiButton);
         speechText=findViewById(R.id.speechtext);
         Button speakButton=findViewById(R.id.speakButton);
-        intentocr=new Intent(HomeActivity.this,OCRActivity.class);
-        intentlogo=new Intent(HomeActivity.this,LogoActivity.class);
-        intentcam=new Intent(HomeActivity.this,CameraActivity.class);
-        intentrpi=new Intent(HomeActivity.this,stream.class);
-
-
-
-
-        speakButton.setOnClickListener(new View.OnClickListener() {
+        connect=findViewById(R.id.connectbutton);
+        disconnect=findViewById(R.id.disconnectButton);
+        portfield=findViewById(R.id.port);
+        ipfield=findViewById(R.id.IpAddress);
+        connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                this.displaySpeechRecognizer();
-                if(spokenText=="logo"){
-                    intentlogo=new Intent(HomeActivity.this,LogoActivity.class);
-                    startActivity(intentlogo);
-                }
-                else if(spokenText=="ocr"){
-                    Toast.makeText(HomeActivity.this,spokenText,Toast.LENGTH_LONG);
-                    intentocr=new Intent(HomeActivity.this,OCRActivity.class);
-                    startActivity(intentocr);
-                }
-                else if(spokenText=="raspberry"){
-                    Toast.makeText(HomeActivity.this,spokenText,Toast.LENGTH_LONG);
-                    intentrpi=new Intent(HomeActivity.this,stream.class);
-                    startActivity(intentrpi);
-                }
-                else if(spokenText=="camera"){
-                    intentcam=new Intent(HomeActivity.this,CameraActivity.class);
-                    startActivity(intentcam);
-                }
-                else{
-                    Toast.makeText(HomeActivity.this,"Not recognized",Toast.LENGTH_LONG);
-                }
+                IPAddress=ipfield.getText().toString();
+                Port=portfield.getText().toString();
 
             }
-            // Create an intent that can start the Speech Recognizer activity
-            private void displaySpeechRecognizer() {
-                Intent intent = new Intent(android.speech.RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                intent.putExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                        android.speech.RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-// Start the activity, the intent will be populated with the speech text
-                startActivityForResult(intent, SPEECH_REQUEST_CODE);
-            }
-
-
         });
+
+
+
+
+
         cameraManager=(CameraManager)getSystemService(CAMERA_SERVICE);
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{
@@ -123,24 +104,28 @@ public class HomeActivity extends AppCompatActivity {
         ocrbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                intentocr=new Intent(HomeActivity.this,OCRActivity.class);
                 startActivity(intentocr);
             }
         });
         logobutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                intentlogo=new Intent(HomeActivity.this,LogoActivity.class);
                 startActivity(intentlogo);
             }
         });
         camerabutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                intentcam=new Intent(HomeActivity.this,CameraActivity.class);
                 startActivity(intentcam);
             }
         });
         rpiButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                intentrpi=new Intent(HomeActivity.this,stream.class);
                 startActivity(intentrpi);
             }
         });
@@ -153,12 +138,38 @@ public class HomeActivity extends AppCompatActivity {
         if (requestCode == SPEECH_REQUEST_CODE && resultCode == RESULT_OK) {
             List<String> results = data.getStringArrayListExtra(
                     RecognizerIntent.EXTRA_RESULTS);
-            spokenText = results.get(0);
+            spokenText = results.get(0);}
+        //intentocr=new Intent(HomeActivity.this,OCRActivity.class);
+        //startActivity(intentocr);
             // Do something with spokenText
-            speechText.setText(spokenText);
+
+            Toast.makeText(HomeActivity.this,"Hello World",Toast.LENGTH_LONG);
+        if(spokenText=="logo"){
+
+            intentlogo=new Intent(HomeActivity.this,LogoActivity.class);
+            startActivity(intentlogo);
+        }
+        else if(spokenText=="ocr"){
             Toast.makeText(HomeActivity.this,spokenText,Toast.LENGTH_LONG);
-                    }
+            intentocr=new Intent(HomeActivity.this,OCRActivity.class);
+            startActivity(intentocr);
+        }
+        else if(spokenText=="raspberry"){
+            Toast.makeText(HomeActivity.this,spokenText,Toast.LENGTH_LONG);
+            intentrpi=new Intent(HomeActivity.this,stream.class);
+            startActivity(intentrpi);
+        }
+        else if(spokenText=="camera"){
+            intentcam=new Intent(HomeActivity.this,CameraActivity.class);
+            startActivity(intentcam);
+        }
+        else{
+            Toast.makeText(HomeActivity.this,"Not recognized",Toast.LENGTH_LONG);
+        }
+        speechText.setText(spokenText);
+
         super.onActivityResult(requestCode, resultCode, data);
     }
+
 
 }
